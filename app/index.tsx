@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
+import { authClient } from '@/lib/auth-client';
 import { Link, Stack } from 'expo-router';
 import { Combine, MoonStarIcon, StarIcon, SunIcon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
+import { useState } from 'react';
 import { Image, type ImageStyle, Pressable, View } from 'react-native';
 
 const LOGO = {
@@ -30,6 +32,14 @@ const IMAGE_STYLE: ImageStyle = {
 
 export default function Screen() {
   const { colorScheme } = useColorScheme();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLogin = async () => {
+    await authClient.signIn.email({
+      email,
+      password,
+    })
+  };
 
   return (
     <>
@@ -61,6 +71,8 @@ export default function Screen() {
                 autoComplete="email"
                 autoCapitalize="none"
                 returnKeyType="next"
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
 
@@ -75,10 +87,11 @@ export default function Screen() {
                   <Text className="text-sm">Forgot your password?</Text>
                 </Button>
               </View>
-              <Input id="password" secureTextEntry />
+              <Input id="password" secureTextEntry value={password}
+                onChangeText={setPassword} />
             </View>
 
-            <Button className="w-full">
+            <Button className="w-full" onPress={handleLogin}>
               <Text>Continue</Text>
             </Button>
           </View>
